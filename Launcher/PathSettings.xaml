@@ -354,6 +354,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <CheckBox x:Name="is_mcc" Foreground="{DynamicResource TextColor}" Grid.Row="0" ToolTip="{Binding SelectedIndex, Converter={StaticResource ProfiletoContent}, ConverterParameter=8, ElementName=gen_type}" Content="{Binding SelectedIndex, Converter={StaticResource ProfiletoContent}, ConverterParameter=7, ElementName=gen_type}"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="22" Click="profile_data_Click" />
                             <CheckBox Grid.Row="1" Foreground="{DynamicResource TextColor}" x:Name="community_tools" Content="Community Extensions" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Are community extensions used? (H2Codez, OpenSauce, etc)">
@@ -407,6 +409,16 @@
                                 </CheckBox.Visibility>
                             </CheckBox>
                             <CheckBox Grid.Row="6" Foreground="{DynamicResource TextColor}" x:Name="lm_color_fix" Content="Disable Lightmap Color Assertion" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Applies small patch to tool.exe/tool_fast.exe to prevent color below zero (e.g. color->red>=0) assertion failures.">
+                                <CheckBox.Visibility>
+                                    <MultiBinding Converter="{StaticResource ProfileSettingsVisibility}">
+                                        <Binding ElementName="is_mcc" Path="IsChecked" />
+                                        <Binding ElementName="gen_type" Path="SelectedIndex" />
+                                        <Binding ElementName="community_tools" Path="IsChecked" />
+                                        <Binding Source="6" />
+                                    </MultiBinding>
+                                </CheckBox.Visibility>
+                            </CheckBox>
+                            <CheckBox Grid.Row="7" Foreground="{DynamicResource TextColor}" x:Name="fsb_corruption_fix" Content="Fix FSB Import Errors" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Placeholder">
                                 <CheckBox.Visibility>
                                     <MultiBinding Converter="{StaticResource ProfileSettingsVisibility}">
                                         <Binding ElementName="is_mcc" Path="IsChecked" />
