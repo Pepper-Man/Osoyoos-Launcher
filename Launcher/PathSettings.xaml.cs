@@ -128,7 +128,7 @@ namespace ToolkitLauncher
 
             if (gen_type.SelectedIndex == 3 && !(bool)is_mcc.IsChecked)
             {
-                // Do stuff
+                ReachToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
             }
 
             this.Close();
