@@ -138,21 +138,21 @@ namespace ToolkitLauncher.Utility
 
                 try
                 {
-                    fileHash = ComputeRegionHash(toolPath, patchData.locations.Select(x => x.offset), 1024);
+                    fileHash = ComputeRegionHash(exePath, patchData.locations.Select(x => x.offset), 1024);
                 }
                 catch (IOException ex)
                 {
-                    MessageBox.Show($"Unable to read {Path.GetFileName(toolPath)}.\n\nMake sure the program is not currently running.\n\nDetails: {ex.Message}", "File Read Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Unable to read {Path.GetFileName(exePath)}.\n\nMake sure the program is not currently running.\n\nDetails: {ex.Message}", "File Read Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 catch (UnauthorizedAccessException ex)
                 {
-                    MessageBox.Show($"Access denied when reading {Path.GetFileName(toolPath)}.\n\nTry running the launcher as administrator or check file permissions.\n\nDetails: {ex.Message}", "Permission Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Access denied when reading {Path.GetFileName(exePath)}.\n\nTry running the launcher as administrator or check file permissions.\n\nDetails: {ex.Message}", "Permission Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"An unexpected error occurred while verifying {Path.GetFileName(toolPath)}:\n\n{ex.Message}", "Patcher Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"An unexpected error occurred while verifying {Path.GetFileName(exePath)}:\n\n{ex.Message}", "Patcher Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
