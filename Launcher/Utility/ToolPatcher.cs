@@ -138,7 +138,7 @@ namespace ToolkitLauncher.Utility
                 // Exit early if patch shouldn't be applied
                 if (!ShouldPatch(fileHash, patchData.original, patchData.patched, Path.GetFileName(exePath), "Reach Lightmap Color", applyPatch))
                 {
-                    return;
+                    continue;
                 }
 
                 // Perform patching/reverting
