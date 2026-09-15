@@ -424,7 +424,7 @@
                                         <Binding ElementName="is_mcc" Path="IsChecked" />
                                         <Binding ElementName="gen_type" Path="SelectedIndex" />
                                         <Binding ElementName="community_tools" Path="IsChecked" />
-                                        <Binding Source="6" />
+                                        <Binding Source="7" />
                                     </MultiBinding>
                                 </CheckBox.Visibility>
                             </CheckBox>

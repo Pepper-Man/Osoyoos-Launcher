@@ -126,9 +126,17 @@ namespace ToolkitLauncher
                 ToolPatcher.PatchLightmapColorAssert(lm_color_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
             }
 
-            if (gen_type.SelectedIndex == 3 && !(bool)is_mcc.IsChecked)
+            if (gen_type.SelectedIndex == 2 && !(bool)is_mcc.IsChecked)
             {
-                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
+                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text, "H3");
+            }
+            else if (gen_type.SelectedIndex == 2 && (bool)is_mcc.IsChecked)
+            {
+                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text, "ODST");
+            }
+            else if (gen_type.SelectedIndex == 3 && !(bool)is_mcc.IsChecked)
+            {
+                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text, "Reach");
             }
 
             this.Close();
