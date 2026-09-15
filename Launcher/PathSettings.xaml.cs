@@ -123,12 +123,12 @@ namespace ToolkitLauncher
 
             if (gen_type.SelectedIndex == 3 && !(bool)is_mcc.IsChecked)
             {
-                ReachToolPatcher.PatchLightmapColorAssert(lm_color_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
+                ToolPatcher.PatchLightmapColorAssert(lm_color_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
             }
 
             if (gen_type.SelectedIndex == 3 && !(bool)is_mcc.IsChecked)
             {
-                ReachToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
+                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
             }
 
             this.Close();

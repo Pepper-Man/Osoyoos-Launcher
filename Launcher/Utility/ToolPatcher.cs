@@ -9,7 +9,7 @@ using ToolkitLauncher.ToolkitInterface;
 
 namespace ToolkitLauncher.Utility
 {
-    internal class ReachToolPatcher
+    internal class ToolPatcher
     {
         /// <summary>
         /// Reads byte regions centered at the specified offset(s) from a file, concatenates them,
@@ -42,7 +42,12 @@ namespace ToolkitLauncher.Utility
             return BitConverter.ToString(hash).Replace("-", "");
         }
 
-        static void ToolPatcher(string exePath, IEnumerable<(long offset, byte[] bytes)> patches)
+        /// <summary>
+        /// Opens the target executable and writes byte patches to the specified file offsets
+        /// </summary>
+        /// <param name="exePath">The file path to the target executable.</param>
+        /// <param name="patches">A collection of tuples containing the target file offset original, and replacement byte sequences.</param>
+        static void PatchTool(string exePath, IEnumerable<(long offset, byte[] bytes)> patches)
         {
             using var fs = new FileStream(exePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
 
@@ -53,7 +58,20 @@ namespace ToolkitLauncher.Utility
             }
         }
 
-        static bool ShouldPatch(string fileHash, string originalHash, string patchedHash, string exeName, bool applyPatch)
+        /// <summary>
+        /// Determines whether a patching or reverting operation should proceed by validating the file's current hash 
+        /// against the expected pre-calculated original and patched hash values.
+        /// </summary>
+        /// <param name="fileHash">The current computed region hash of the target file.</param>
+        /// <param name="originalHash">The expected region hash of the unpatched original file.</param>
+        /// <param name="patchedHash">The expected region hash of the modified file.</param>
+        /// <param name="exeName">The name of the executable for logging/error outputs.</param>
+        /// <param name="patchName">A friendly name of the patch for logging/error outputs.</param>
+        /// <param name="applyPatch"><c>true</c> if checking readiness to apply the patch; <c>false</c> if checking readiness to revert it.</param>
+        /// <returns>
+        /// <c>true</c> if the file is in the expected state for modification; <c>false</c> if the file is already in the target state or if an unknown hash mismatch occurs.
+        /// </returns>
+        static bool ShouldPatch(string fileHash, string originalHash, string patchedHash, string exeName, string patchName, bool applyPatch)
         {
             if (applyPatch)
             {
@@ -81,8 +99,8 @@ namespace ToolkitLauncher.Utility
             }
 
             // Unknown file changes
-            Trace.WriteLine($"Region hash mismatch for {exeName} -- aborting patch");
-            MessageBox.Show($"Region hash mismatch for {exeName} -- aborting \"color assert\" patch.\nUnknown modification detected in the 1KB surrounding patch region(s)\nLightmapping will continue but you may experience a crash.",
+            Trace.WriteLine($"Region hash mismatch for {exeName} -- aborting {patchName} patch");
+            MessageBox.Show($"Region hash mismatch for {exeName} -- aborting {patchName} patch.\nUnknown modification detected in the 1KB surrounding patch region(s).\nIf you don't know what this means, contact Crisp or PepperMan on Discord.",
             "Patcher Error", MessageBoxButton.OK, MessageBoxImage.Error
             );
             return false;
@@ -91,7 +109,7 @@ namespace ToolkitLauncher.Utility
         /// <summary>
         /// Disables "color->red>=0" type assertion failures during lightmapping.
         /// </summary>
-        /// <param name="applyPatch">True to write the patch bytes; false to revert to the original file data.</param>
+        /// <param name="applyPatch"><c>true</c> writes the patch bytes; <c>false</c> reverts to the original file data.</param>
         /// <param name="toolPath">The file path to tool.exe</param>
         /// <param name="toolFastPath">The file path to tool_fast.exe</param>
         // 
@@ -157,7 +175,7 @@ namespace ToolkitLauncher.Utility
                 string fileHash = ComputeRegionHash(exePath, patchData.locations.Select(x => x.offset), 1024);
 
                 // Exit early if patch shouldn't be applied
-                if (!ShouldPatch(fileHash, patchData.original, patchData.patched, Path.GetFileName(exePath), applyPatch))
+                if (!ShouldPatch(fileHash, patchData.original, patchData.patched, Path.GetFileName(exePath), "Reach Lightmap Color", applyPatch))
                 {
                     return;
                 }
@@ -165,7 +183,7 @@ namespace ToolkitLauncher.Utility
                 // Perform patching/reverting
                 try
                 {
-                    ToolPatcher(exePath, patchData.locations.Select(loc => (loc.offset, applyPatch ? newBytes : loc.RevertBytes)));
+                    PatchTool(exePath, patchData.locations.Select(loc => (loc.offset, applyPatch ? newBytes : loc.RevertBytes)));
                 }
                 catch (IOException ex)
                 {
@@ -180,7 +198,7 @@ namespace ToolkitLauncher.Utility
         /// sound count, thus running past the existing sound headers, reading garbage/audio data as headers, and
         /// throwing errors and breaking things.
         /// </summary>
-        /// <param name="applyPatch">True to write the patch bytes; false to revert to the original file data.</param>
+        /// <param name="applyPatch"><c>true</c> writes the patch bytes; <c>false</c> reverts to the original file data.</param>
         /// <param name="toolPath">The file path to tool.exe</param>
         /// <param name="toolFastPath">The file path to tool_fast.exe</param>
         public static void PatchFSBImportFixes(bool applyPatch, string toolPath, string toolFastPath)
@@ -217,7 +235,7 @@ namespace ToolkitLauncher.Utility
             string fileHash = ComputeRegionHash(toolPath, patchData.locations.Select(x => x.offset), 1024);
 
             // Exit early if patch shouldn't be applied
-            if (!ShouldPatch(fileHash, patchData.original, patchData.patched, Path.GetFileName(toolPath), applyPatch))
+            if (!ShouldPatch(fileHash, patchData.original, patchData.patched, Path.GetFileName(toolPath), "FMOD Import", applyPatch))
             {
                 return;
             }
@@ -225,7 +243,7 @@ namespace ToolkitLauncher.Utility
             // Perform patching/reverting
             try
             {
-                ToolPatcher(toolPath, patchData.locations.Select(loc => (loc.offset, applyPatch ? loc.PatchBytes : loc.OriginalBytes)));
+                PatchTool(toolPath, patchData.locations.Select(loc => (loc.offset, applyPatch ? loc.PatchBytes : loc.OriginalBytes)));
             }
             catch (IOException ex)
             {
