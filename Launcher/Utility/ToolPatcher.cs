@@ -26,10 +26,10 @@ namespace ToolkitLauncher.Utility
             using var ms = new MemoryStream();
 
             // Gather all region bytes together
+            byte[] buffer = new byte[regionSize];
             foreach (var offset in offsets)
             {
                 long regionStart = Math.Max(0, offset - regionSize / 2); // Center region on the offset
-                byte[] buffer = new byte[regionSize];
 
                 fs.Seek(regionStart, SeekOrigin.Begin);
                 int bytesRead = fs.Read(buffer, 0, buffer.Length);
@@ -164,6 +164,12 @@ namespace ToolkitLauncher.Utility
         /// <param name="toolFastPath">The file path to tool_fast.exe</param>
         public static void PatchFSBImportFixes(bool applyPatch, string toolPath, string toolFastPath, string engine)
         {
+            if (!File.Exists(toolPath))
+            {
+                Console.WriteLine($"The path for tool.exe \"{toolPath}\" does not exist!");
+                return;
+            }
+
             (string original, string patched, (long offset, byte[] OriginalBytes, byte[] PatchBytes)[] locations) patchData;
 
             switch (engine)
