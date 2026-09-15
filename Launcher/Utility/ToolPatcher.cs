@@ -169,13 +169,13 @@ namespace ToolkitLauncher.Utility
             switch (engine)
             {
                 case "H3":
-                    patchData = h3FmodPatchData[0];
+                    patchData = h3FmodPatchData[ToolType.Tool];
                     break;
                 case "ODST":
-                    patchData = odstFmodPatchData[0];
+                    patchData = odstFmodPatchData[ToolType.Tool];
                     break;
                 case "Reach":
-                    patchData = reachFmodPatchData[0];
+                    patchData = reachFmodPatchData[ToolType.Tool];
                     break;
                 default:
                     Console.WriteLine("No FMOD fix patch data defined for this engine!!");
