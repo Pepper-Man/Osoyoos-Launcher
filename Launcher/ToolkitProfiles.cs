@@ -119,6 +119,9 @@ namespace ToolkitLauncher
             [JsonPropertyName("reach_color_assert_fix")]
             public bool ReachColorAssertFix { get; set; } = false;
 
+            [JsonPropertyName("reach_fsb_import_fix")]
+            public bool ReachFSBImportFix { get; set; } = false;
+
 			/// <summary>
 			/// Whatever we should temporarily be experts
 			/// </summary>

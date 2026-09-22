@@ -120,10 +120,25 @@ namespace ToolkitLauncher
         private void save_button_Click(object sender, RoutedEventArgs e)
         {
             ToolkitProfiles.Save();
+
             if (gen_type.SelectedIndex == 3 && !(bool)is_mcc.IsChecked)
             {
-                ReachToolPatcher.PatchLightmapColorAssert(lm_color_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
+                ToolPatcher.PatchLightmapColorAssert(lm_color_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text);
             }
+
+            if (gen_type.SelectedIndex == 2 && !(bool)is_mcc.IsChecked)
+            {
+                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text, "H3");
+            }
+            else if (gen_type.SelectedIndex == 2 && (bool)is_mcc.IsChecked)
+            {
+                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text, "ODST");
+            }
+            else if (gen_type.SelectedIndex == 3 && !(bool)is_mcc.IsChecked)
+            {
+                ToolPatcher.PatchFSBImportFixes(fsb_corruption_fix.IsChecked ?? false, tool_path.Text, tool_fast_path.Text, "Reach");
+            }
+
             this.Close();
         }
 
@@ -286,6 +301,7 @@ namespace ToolkitLauncher
             expert_mode.IsChecked = false;
             batch.IsChecked = false;
             lm_color_fix.IsChecked = false;
+            fsb_corruption_fix.IsChecked = false;
             h2codez_update_groupbox.Visibility = Visibility.Collapsed;
             if (profile_select != null && profile_select.SelectedItem != null && ToolkitProfiles.SettingsList.Count > profile_index && profile_index >= 0)
             {
@@ -306,6 +322,7 @@ namespace ToolkitLauncher
                 expert_mode.IsChecked = ToolkitProfiles.SettingsList[profile_index].ExpertMode;
                 batch.IsChecked = ToolkitProfiles.SettingsList[profile_index].Batch;
                 lm_color_fix.IsChecked = ToolkitProfiles.SettingsList[profile_index].ReachColorAssertFix;
+                fsb_corruption_fix.IsChecked = ToolkitProfiles.SettingsList[profile_index].ReachFSBImportFix;
 
                 h2codez_update_groupbox.Visibility = ToolkitProfiles.SettingsList[profile_index].IsH2Codez() ?
                     Visibility.Visible : Visibility.Collapsed;
@@ -360,6 +377,7 @@ namespace ToolkitLauncher
                 ExpertMode = (bool)expert_mode.IsChecked,
                 Batch = (bool)batch.IsChecked,
                 ReachColorAssertFix = (bool)lm_color_fix.IsChecked,
+                ReachFSBImportFix = (bool)fsb_corruption_fix.IsChecked
             };
 
             // get new and old base directory
