@@ -31,6 +31,9 @@ namespace OsoyoosMB
                 { "_nm", ApplySettingsNormals },
                 { "_n", ApplySettingsNormals },
                 { "_zbump", ApplySettingsNormals },
+                { "_zb", ApplySettingsNormals },
+                { "_norm", ApplySettingsMaterials },
+                { "_nrm", ApplySettingsNormals },
 
                 // Bump maps
                 { "_bump", ApplySettingsBumps },
@@ -48,7 +51,9 @@ namespace OsoyoosMB
                 { "_rmo", ApplySettingsMaterials },
                 { "_rmoh", ApplySettingsMaterials },
                 { "_mro", ApplySettingsMaterials },
-                { "_mroh", ApplySettingsMaterials },  
+                { "_mroh", ApplySettingsMaterials },
+                { "_combo", ApplySettingsMaterials },
+                { "_control", ApplySettingsMaterials }
             };
 
             var miscSuffixRules = new Dictionary<string, string>
@@ -65,9 +70,15 @@ namespace OsoyoosMB
                 { "_detailbump", "Detail Bump Map (from Height Map - fades out)" },
                 { "_dsprite", "Sprite (Double Multiply, Gray Background)" },
                 { "_float", "Float Map (WARNING" },
+                { "_globalshape", "Blend Map (linear for terrains)" },
+                { "_global", "Blend Map (linear for terrains)" },
+                { "_shape", "Blend Map (linear for terrains)" },
+                { "_gs", "Blend Map (linear for terrains)" },
+                { "_h", "Height Map (for Parallax)" },
                 { "_height", "Height Map (for Parallax)" },
                 { "_heightmap", "Height Map (for Parallax)" },
                 { "_parallax", "Height Map (for Parallax)" },
+                { "_disp", "Height Map (for Parallax)" },
                 { "_displacement", "Height Map (for Parallax)" },
                 { "_illum", "Self-Illum Map" },
                 { "_illumination", "Self-Illum Map" },
