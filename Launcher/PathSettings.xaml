@@ -418,7 +418,7 @@
                                     </MultiBinding>
                                 </CheckBox.Visibility>
                             </CheckBox>
-                            <CheckBox Grid.Row="7" Foreground="{DynamicResource TextColor}" x:Name="fsb_corruption_fix" Content="Fix FSB Import Errors" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Placeholder">
+                            <CheckBox Grid.Row="7" Foreground="{DynamicResource TextColor}" x:Name="fsb_corruption_fix" Content="Fix FSB Import Errors" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Applies a patch to tool.exe to prevent FMOD bank errors/corruption from occuring on sound import.">
                                 <CheckBox.Visibility>
                                     <MultiBinding Converter="{StaticResource ProfileSettingsVisibility}">
                                         <Binding ElementName="is_mcc" Path="IsChecked" />
