@@ -755,28 +755,36 @@ namespace ToolkitLauncher
 
         private string get_default_path(string textbox_string, bool tag_dir, bool is_file)
         {
-            string base_path = toolkit.GetDataDirectory();
-            string local_path = "";
-            if (tag_dir is true)
+            string base_path = tag_dir ? toolkit.GetTagDirectory() : toolkit.GetDataDirectory();
+
+            if (string.IsNullOrWhiteSpace(textbox_string))
             {
-                base_path = toolkit.GetTagDirectory();
+                return is_file ? base_path : base_path.TrimEnd('\\', '/') + "\\";
             }
 
-            if (!string.IsNullOrWhiteSpace(textbox_string))
+            string target = textbox_string.Trim();
+
+            // If its a file path, get the containing folder
+            if (is_file) target = Path.GetDirectoryName(target) ?? "";
+
+            // Return early if its a valid path
+            if (Path.IsPathRooted(target) && Directory.Exists(target))
             {
-                if (is_file == true)
-                {
-                    local_path = Path.GetDirectoryName(textbox_string);
-                }
-                else
-                {
-                    local_path = textbox_string;
-                }
+                return is_file ? target : target.TrimEnd('\\', '/') + "\\";
             }
 
-            if (Directory.Exists(Path.Join(base_path, local_path)))
-                return Path.Join(base_path, local_path);
-            return base_path;
+            // Strip leading separators and any "tags\" or "data\" prefix
+            target = target.TrimStart('\\', '/');
+            if (target.StartsWith("data\\", StringComparison.OrdinalIgnoreCase) || target.StartsWith("tags\\", StringComparison.OrdinalIgnoreCase))
+            {
+                target = target.Substring(5).TrimStart('\\', '/');
+            }
+
+            string combined = Path.Combine(base_path, target);
+            string result = Directory.Exists(combined) ? combined : base_path;
+
+            // Folder pickers require a trailing slash to open inside the folder rather than selecting it
+            return is_file ? result : result.TrimEnd('\\', '/') + "\\";
         }
 
         public MainWindow()
