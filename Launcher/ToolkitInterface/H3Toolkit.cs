@@ -259,13 +259,45 @@ namespace ToolkitLauncher.ToolkitInterface
 
         public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
         {
-            if (string.IsNullOrWhiteSpace(custom_extension))
+            string dataDir = GetDataDirectory();
+
+            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen3(Path.Join(dataDir, path));
+            bool continueImport = true;
+
+            if (badFormatWavs.Count > 0)
             {
-                await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type });
+                string outputMessage = "Warning - the following .wav files are not in a supported format for H3-Reach!\nPlease make sure to use 16-bit or 32-bit PCM formatted .wav files.\n";
+
+                foreach (string wavPath in badFormatWavs)
+                {
+                    string relativePath = Path.GetRelativePath(dataDir, wavPath);
+                    outputMessage += $"\n\"{relativePath}\"";
+                }
+
+                outputMessage += "\n\nPress OK to continue with import anyway, or Cancel to stop the import.";
+
+                DialogResult result = MessageBox.Show(
+                    outputMessage,
+                    "Sound Import Warning",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning);
+
+                if (result != DialogResult.OK)
+                {
+                    continueImport = false;
+                }
             }
-            else
+
+            if (continueImport)
             {
-                await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, "-bank:" + custom_extension.ToLower() });
+                if (string.IsNullOrWhiteSpace(custom_extension))
+                {
+                    await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type });
+                }
+                else
+                {
+                    await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, "-bank:" + custom_extension.ToLower() });
+                }
             }
         }
 

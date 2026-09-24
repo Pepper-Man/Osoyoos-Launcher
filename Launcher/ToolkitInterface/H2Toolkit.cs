@@ -373,7 +373,35 @@ namespace ToolkitLauncher.ToolkitInterface
 
         public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
         {
-            await RunTool(ToolType.Tool, new List<string>() { "import-lipsync", path, ltf_path });
+            string dataDir = GetDataDirectory();
+
+            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen2(Path.Join(dataDir, path));
+            bool continueImport = true;
+
+            if (badFormatWavs.Count > 0)
+            {
+                string outputMessage = "Warning - the following .wav files are not in a supported format for Halo 2!\nPlease make sure to use 22.05KHz, 32KHz, 44.1KHz or 48KHz 16-bit PCM formatted .wav files.\n";
+
+                foreach (string wavPath in badFormatWavs)
+                {
+                    string relativePath = Path.GetRelativePath(dataDir, wavPath);
+                    outputMessage += $"\n\"{relativePath}\"";
+                }
+
+                outputMessage += "\n\nPress OK to continue with import anyway, or Cancel to stop the import.";
+
+                MessageBoxResult msgResult = MessageBox.Show(outputMessage, "Sound Import Warning", MessageBoxButton.OKCancel);
+
+                if (msgResult != MessageBoxResult.OK)
+                {
+                    continueImport = false;
+                }
+            }
+
+            if (continueImport)
+            {
+                await RunTool(ToolType.Tool, new List<string>() { "import-lipsync", path, ltf_path });
+            }
         }
 
         public override async Task ExtractTags(string path, bool h2MoveDir, bool bitmapsAsTGA)

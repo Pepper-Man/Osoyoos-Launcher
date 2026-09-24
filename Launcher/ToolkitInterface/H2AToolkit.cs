@@ -222,7 +222,39 @@ namespace ToolkitLauncher.ToolkitInterface
 
         public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
         {
-            await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, compression_type });
+            string dataDir = GetDataDirectory();
+
+            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen2(Path.Join(dataDir, path));
+            bool continueImport = true;
+
+            if (badFormatWavs.Count > 0)
+            {
+                string outputMessage = "Warning - the following .wav files are not in a supported format for Halo 2!\nPlease make sure to use 22.05KHz, 32KHz, 44.1KHz or 48KHz 16-bit PCM formatted .wav files.\n";
+
+                foreach (string wavPath in badFormatWavs)
+                {
+                    string relativePath = Path.GetRelativePath(dataDir, wavPath);
+                    outputMessage += $"\n\"{relativePath}\"";
+                }
+
+                outputMessage += "\n\nPress OK to continue with import anyway, or Cancel to stop the import.";
+
+                DialogResult msgResult = MessageBox.Show(
+                    outputMessage,
+                    "Sound Import Warning",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning);
+
+                if (msgResult != DialogResult.OK)
+                {
+                    continueImport = false;
+                }
+            }
+
+            if (continueImport)
+            {
+                await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, compression_type });
+            }
         }
 
         public override async Task BuildCache(string scenario, CacheType cacheType, ResourceMapUsage resourceUsage, bool logTags, string cachePlatform, bool cacheCompress, bool cacheResourceSharing, bool cacheMultilingualSounds, bool cacheRemasteredSupport, bool cacheMPTagSharing)
