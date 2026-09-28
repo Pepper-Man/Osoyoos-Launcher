@@ -100,7 +100,7 @@ namespace ToolkitLauncher.Utility
             }
         }
 
-        public static List<string> GetInvalidForGen1(string wavFolder)
+        private static List<string> GetInvalidWavs(string wavFolder, Func<AudioData?, bool> validate)
         {
             if (!Directory.Exists(wavFolder)) return [];
 
@@ -110,66 +110,38 @@ namespace ToolkitLauncher.Utility
             {
                 AudioData? audioData = ReadWavHeader(filePath);
 
-                if (audioData == null || !Gen1ValidFormats.Contains(audioData.Value))
+                if (!validate(audioData))
                 {
                     badWavs.Add(filePath);
                 }
             }
 
             return badWavs;
+        }
+
+        public static List<string> GetInvalidForGen1(string wavFolder)
+        {
+            return GetInvalidWavs(wavFolder, data => data.HasValue && Gen1ValidFormats.Contains(data.Value));
         }
 
         public static List<string> GetInvalidForGen2(string wavFolder)
         {
-            if (!Directory.Exists(wavFolder)) return [];
-
-            List<string> badWavs = [];
-
-            foreach (string filePath in Directory.EnumerateFiles(wavFolder, "*.wav", SearchOption.AllDirectories))
-            {
-                AudioData? audioData = ReadWavHeader(filePath);
-
-                if (audioData == null || !Gen2ValidFormats.Contains(audioData.Value))
-                {
-                    badWavs.Add(filePath);
-                }
-            }
-
-            return badWavs;
+            return GetInvalidWavs(wavFolder, data => data.HasValue && Gen2ValidFormats.Contains(data.Value));
         }
 
         public static List<string> GetInvalidForGen3(string wavFolder, string soundClass)
         {
-            if (!Directory.Exists(wavFolder)) return [];
-
-            List<string> badWavs = [];
-
-            foreach (string filePath in Directory.EnumerateFiles(wavFolder, "*.wav", SearchOption.AllDirectories))
+            return GetInvalidWavs(wavFolder, data =>
             {
-                AudioData? audioData = ReadWavHeader(filePath);
+                if (!data.HasValue) return false;
 
-                // Language audio has stricter requirements (for lipsync generation to work)
                 if (LanguageSoundClasses.Contains(soundClass))
                 {
-                    // Language audio
-                    // Must be read, PCM, ONLY 16-bit, and a sample rate >= 8000Hz
-                    if (audioData == null || audioData.Value.AudioFormat != 1 || audioData.Value.Bits != 16 || audioData.Value.SampleRate < 8000)
-                    {
-                        badWavs.Add(filePath);
-                    }
+                    return data.Value.AudioFormat == 1 && data.Value.Bits == 16 && data.Value.SampleRate >= 8000;
                 }
-                else
-                {
-                    // SFX audio
-                    // Must be read, PCM, and 16 or 32 bit. We ignore sample rate since it doesn't seem to care - tested 0.5KHz through 384KHz
-                    if (audioData == null || audioData.Value.AudioFormat != 1 || (audioData.Value.Bits != 16 && audioData.Value.Bits != 32))
-                    {
-                        badWavs.Add(filePath);
-                    }
-                }
-            }
 
-            return badWavs;
+                return data.Value.AudioFormat == 1 && (data.Value.Bits == 16 || data.Value.Bits == 32);
+            });
         }
 
         public static string BuildWarningMessage(List<string> badFormatWavs, string dataDir, int engineGeneration)
