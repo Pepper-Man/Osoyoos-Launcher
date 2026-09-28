@@ -334,7 +334,7 @@
                         </ComboBox>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="2" x:Name="build_type_box" Header="Build Options" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="False">
+                <GroupBox Grid.Column="2" x:Name="build_type_box" Header="Profile Options" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="False">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="5"/>
@@ -408,7 +408,7 @@
                                     </MultiBinding>
                                 </CheckBox.Visibility>
                             </CheckBox>
-                            <CheckBox Grid.Row="6" Foreground="{DynamicResource TextColor}" x:Name="lm_color_fix" Content="Disable Lightmap Color Assertion" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Applies small patch to tool.exe/tool_fast.exe to prevent color below zero (e.g. color->red>=0) assertion failures.">
+                            <CheckBox Grid.Row="6" Foreground="{DynamicResource TextColor}" x:Name="lm_color_fix" Content="Disable Lightmap Color Assertion" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Applies small patch to tool.exe/tool_fast.exe to prevent color below zero (e.g. color->red>=0) assertion failures. This is applied/unapplied when you hit Save.">
                                 <CheckBox.Visibility>
                                     <MultiBinding Converter="{StaticResource ProfileSettingsVisibility}">
                                         <Binding ElementName="is_mcc" Path="IsChecked" />
@@ -418,7 +418,7 @@
                                     </MultiBinding>
                                 </CheckBox.Visibility>
                             </CheckBox>
-                            <CheckBox Grid.Row="7" Foreground="{DynamicResource TextColor}" x:Name="fsb_corruption_fix" Content="Fix FSB Import Errors" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Applies a patch to tool.exe to prevent FMOD bank errors/corruption from occuring on sound import.">
+                            <CheckBox Grid.Row="7" Foreground="{DynamicResource TextColor}" x:Name="fsb_corruption_fix" Content="Fix FSB Import Errors" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Bottom" Click="profile_data_Click" ToolTip="Applies a patch to tool.exe to prevent FMOD bank errors/corruption from occuring on sound import. This is applied/unapplied when you hit Save.">
                                 <CheckBox.Visibility>
                                     <MultiBinding Converter="{StaticResource ProfileSettingsVisibility}">
                                         <Binding ElementName="is_mcc" Path="IsChecked" />

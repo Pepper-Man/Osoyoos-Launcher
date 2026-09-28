@@ -19,6 +19,7 @@ namespace ToolkitLauncher.Utility
         [
             new(1, 1, 22050, 16),
             new(1, 1, 44100, 16),
+            new(1, 2, 22050, 16),
             new(1, 2, 44100, 16)
         ];
 
@@ -127,7 +128,7 @@ namespace ToolkitLauncher.Utility
             {
                 AudioData? audioData = ReadWavHeader(filePath);
 
-                // Must be read, PCM, and 16 or 32 bit. We ignore sample rate since it doesn't seem to care
+                // Must be read, PCM, and 16 or 32 bit. We ignore sample rate since it doesn't seem to care - tested 0.5KHz through 384KHz
                 if (audioData == null || audioData.Value.AudioFormat != 1 || (audioData.Value.Bits != 16 && audioData.Value.Bits != 32))
                 {
                     badWavs.Add(filePath);
