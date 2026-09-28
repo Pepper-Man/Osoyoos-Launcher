@@ -716,6 +716,12 @@ namespace ToolkitLauncher
                     if (gen_type_selection == 2 || (gen_type_selection == 3 && !isMCC))
                         vis = Visibility.Visible;
                 }
+                else if (parameter_workaround is string && Int32.Parse(parameter_workaround as string) == 8)
+                {
+                    //Check if the build type is H1 MCC, or H2, or H3, or ODST, or Reach
+                    if ((gen_type_selection >= 0 && gen_type_selection <= 2) || (gen_type_selection == 3 && !isMCC))
+                        vis = Visibility.Visible;
+                }
             }
             else
             {
