@@ -102,6 +102,8 @@ namespace ToolkitLauncher.Utility
 
         public static List<string> GetInvalidForGen1(string wavFolder)
         {
+            if (!Directory.Exists(wavFolder)) return [];
+
             List<string> badWavs = [];
 
             foreach (string filePath in Directory.EnumerateFiles(wavFolder, "*.wav", SearchOption.AllDirectories))
@@ -119,6 +121,8 @@ namespace ToolkitLauncher.Utility
 
         public static List<string> GetInvalidForGen2(string wavFolder)
         {
+            if (!Directory.Exists(wavFolder)) return [];
+
             List<string> badWavs = [];
 
             foreach (string filePath in Directory.EnumerateFiles(wavFolder, "*.wav", SearchOption.AllDirectories))
@@ -136,6 +140,8 @@ namespace ToolkitLauncher.Utility
 
         public static List<string> GetInvalidForGen3(string wavFolder, string soundClass)
         {
+            if (!Directory.Exists(wavFolder)) return [];
+
             List<string> badWavs = [];
 
             foreach (string filePath in Directory.EnumerateFiles(wavFolder, "*.wav", SearchOption.AllDirectories))
