@@ -261,12 +261,12 @@ namespace ToolkitLauncher.ToolkitInterface
         {
             string dataDir = GetDataDirectory();
 
-            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen3(Path.Join(dataDir, path));
+            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen3(Path.Join(dataDir, path), class_type);
             bool continueImport = true;
 
             if (badFormatWavs.Count > 0)
             {
-                string outputMessage = "Warning - the following .wav files are not in a supported format for H3-Reach!\nPlease make sure to use 16-bit or 32-bit PCM formatted .wav files.\n";
+                string outputMessage = "Warning - the .wav files listed below are not in a supported format for H3-Reach!\nPlease make sure to use 16-bit or 32-bit PCM formatted .wav files for SFX imports.\nFor language/dialog imports (e.g. \"unit_dialog\", \"mission_dialog\" etc.), you must use 16-bit PCM wavs with a sample rate of at least 8000Hz, otherwise lipsync data will not be generated.\n\nBad files:";
 
                 foreach (string wavPath in badFormatWavs)
                 {

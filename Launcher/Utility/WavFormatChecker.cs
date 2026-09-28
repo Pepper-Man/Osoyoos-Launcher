@@ -35,6 +35,20 @@ namespace ToolkitLauncher.Utility
             new(1, 2, 48000, 16),
         ];
 
+        private static readonly HashSet<string> LanguageSoundClasses =
+        [
+            "unit_dialog",
+            "mission_dialog",
+            "cinematic_dialog",
+            "multiplayer_dialog",
+            "cortana_mission",
+            "cortana_cinematic",
+            "cortana_gravemind_channel",
+            "player_voice_team",
+            "player_voice_proxy",
+            "multilingual_test"
+        ];
+
         private static AudioData? ReadWavHeader(string filePath)
         {
             try
@@ -120,7 +134,7 @@ namespace ToolkitLauncher.Utility
             return badWavs;
         }
 
-        public static List<string> GetInvalidForGen3(string wavFolder)
+        public static List<string> GetInvalidForGen3(string wavFolder, string soundClass)
         {
             List<string> badWavs = [];
 
@@ -128,10 +142,24 @@ namespace ToolkitLauncher.Utility
             {
                 AudioData? audioData = ReadWavHeader(filePath);
 
-                // Must be read, PCM, and 16 or 32 bit. We ignore sample rate since it doesn't seem to care - tested 0.5KHz through 384KHz
-                if (audioData == null || audioData.Value.AudioFormat != 1 || (audioData.Value.Bits != 16 && audioData.Value.Bits != 32))
+                // Language audio has stricter requirements (for lipsync generation to work)
+                if (LanguageSoundClasses.Contains(soundClass))
                 {
-                    badWavs.Add(filePath);
+                    // Language audio
+                    // Must be read, PCM, ONLY 16-bit, and a sample rate >= 8000Hz
+                    if (audioData == null || audioData.Value.AudioFormat != 1 || audioData.Value.Bits != 16 || audioData.Value.SampleRate < 8000)
+                    {
+                        badWavs.Add(filePath);
+                    }
+                }
+                else
+                {
+                    // SFX audio
+                    // Must be read, PCM, and 16 or 32 bit. We ignore sample rate since it doesn't seem to care - tested 0.5KHz through 384KHz
+                    if (audioData == null || audioData.Value.AudioFormat != 1 || (audioData.Value.Bits != 16 && audioData.Value.Bits != 32))
+                    {
+                        badWavs.Add(filePath);
+                    }
                 }
             }
 
