@@ -53,7 +53,7 @@ namespace ToolkitLauncher.Utility
         {
             try
             {
-                using var file = File.OpenRead(filePath);
+                using var file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 using BinaryReader reader = new(file);
 
                 reader.ReadBytes(4); // Chunk Id = RIFF
