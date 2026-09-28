@@ -165,5 +165,28 @@ namespace ToolkitLauncher.Utility
 
             return badWavs;
         }
+
+        public static string BuildWarningMessage(List<string> badFormatWavs, string dataDir, int engineGeneration)
+        {
+            string header = engineGeneration switch
+            {
+                1 => "Warning - the .wav files listed below are not in a supported format for Halo 1!\nPlease make sure to use 22.05KHz or 44.1KHz 16-bit PCM formatted .wav files.\n\nBad files:",
+                2 => "Warning - the .wav files listed below are not in a supported format for Halo 2!\nPlease make sure to use 22.05KHz, 32KHz, 44.1KHz or 48KHz 16-bit PCM formatted .wav files.\n\nBad files:",
+                _ => "Warning - the .wav files listed below are not in a supported format for H3-Reach!\nPlease make sure to use 16-bit or 32-bit PCM formatted .wav files for SFX imports.\nFor language/dialog imports (e.g. \"unit_dialog\", \"mission_dialog\" etc.), you must use 16-bit PCM wavs with a sample rate of at least 8000Hz, otherwise lipsync data will not be generated.\n\nBad files:"
+            };
+
+            StringBuilder sb = new();
+            sb.AppendLine(header);
+
+            foreach (string wavPath in badFormatWavs)
+            {
+                sb.AppendLine($"\"{Path.GetRelativePath(dataDir, wavPath)}\"");
+            }
+
+            sb.AppendLine();
+            sb.Append("Press OK to continue with import anyway, or Cancel to stop the import.");
+
+            return sb.ToString();
+        }
     }
 }

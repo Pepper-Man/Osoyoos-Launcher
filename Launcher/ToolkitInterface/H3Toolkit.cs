@@ -266,15 +266,7 @@ namespace ToolkitLauncher.ToolkitInterface
 
             if (badFormatWavs.Count > 0 && !suppress_warnings)
             {
-                string outputMessage = "Warning - the .wav files listed below are not in a supported format for H3-Reach!\nPlease make sure to use 16-bit or 32-bit PCM formatted .wav files for SFX imports.\nFor language/dialog imports (e.g. \"unit_dialog\", \"mission_dialog\" etc.), you must use 16-bit PCM wavs with a sample rate of at least 8000Hz, otherwise lipsync data will not be generated.\n\nBad files:";
-
-                foreach (string wavPath in badFormatWavs)
-                {
-                    string relativePath = Path.GetRelativePath(dataDir, wavPath);
-                    outputMessage += $"\n\"{relativePath}\"";
-                }
-
-                outputMessage += "\n\nPress OK to continue with import anyway, or Cancel to stop the import.";
+                string outputMessage = Utility.WavFormatChecker.BuildWarningMessage(badFormatWavs, dataDir, 3);
 
                 DialogResult result = MessageBox.Show(
                     outputMessage,

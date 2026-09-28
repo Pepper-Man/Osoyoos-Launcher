@@ -81,17 +81,9 @@ namespace ToolkitLauncher.ToolkitInterface
             List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen1(Path.Join(dataDir, path));
             bool continueImport = true;
 
-            if (badFormatWavs.Count > 0)
+            if (badFormatWavs.Count > 0 && !suppress_warnings)
             {
-                string outputMessage = "Warning - the following .wav files are not in a supported format for Halo 1!\nPlease make sure to use 22.05KHz or 44.1KHz 16-bit PCM formatted .wav files.\n";
-
-                foreach (string wavPath in badFormatWavs)
-                {
-                    string relativePath = Path.GetRelativePath(dataDir, wavPath);
-                    outputMessage += $"\n\"{relativePath}\"";
-                }
-
-                outputMessage += "\n\nPress OK to continue with import anyway, or Cancel to stop the import.";
+                string outputMessage = Utility.WavFormatChecker.BuildWarningMessage(badFormatWavs, dataDir, 1);
 
                 MessageBoxResult msgResult = MessageBox.Show(outputMessage, "Sound Import Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
 
