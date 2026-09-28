@@ -1271,7 +1271,7 @@ namespace ToolkitLauncher
             string bitrate_value = bitrate_slider.Value.ToString();
             string ltf_path = "data\\" + import_ltf_path.Text;
 
-            await toolkit.ImportSound(sound_path, platform.ToString(), bitrate_value, ltf_path, sound_command.ToString(), class_name, ((ComboBoxItem)sound_compression_type.SelectedItem).Content.ToString().ToLower(), custom_extension);
+            await toolkit.ImportSound(sound_path, platform.ToString(), bitrate_value, ltf_path, sound_command.ToString(), class_name, ((ComboBoxItem)sound_compression_type.SelectedItem).Content.ToString().ToLower(), custom_extension, toolkit_profile.SuppressAudioWarnings);
         }
 
         private void spaces_PreviewKeyDown(object sender, KeyEventArgs e)

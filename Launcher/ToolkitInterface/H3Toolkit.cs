@@ -257,14 +257,14 @@ namespace ToolkitLauncher.ToolkitInterface
             return args;
         }
 
-        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
+        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension, bool suppress_warnings)
         {
             string dataDir = GetDataDirectory();
 
             List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen3(Path.Join(dataDir, path), class_type);
             bool continueImport = true;
 
-            if (badFormatWavs.Count > 0)
+            if (badFormatWavs.Count > 0 && !suppress_warnings)
             {
                 string outputMessage = "Warning - the .wav files listed below are not in a supported format for H3-Reach!\nPlease make sure to use 16-bit or 32-bit PCM formatted .wav files for SFX imports.\nFor language/dialog imports (e.g. \"unit_dialog\", \"mission_dialog\" etc.), you must use 16-bit PCM wavs with a sample rate of at least 8000Hz, otherwise lipsync data will not be generated.\n\nBad files:";
 

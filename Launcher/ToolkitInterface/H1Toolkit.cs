@@ -74,7 +74,7 @@ namespace ToolkitLauncher.ToolkitInterface
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
+        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension, bool suppress_warnings)
         {
             string dataDir = GetDataDirectory();
 
