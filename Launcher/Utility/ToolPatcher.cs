@@ -91,7 +91,7 @@ namespace ToolkitLauncher.Utility
 
             try
             {
-                fileHash = ComputeRegionHash(exePath, patchData.Locations.Select(x => x.Offset), 1024);
+                fileHash = ComputeRegionHash(exePath, patchData.Locations.Select(x => x.Offset), 128);
             }
             catch (IOException ex)
             {
@@ -155,8 +155,9 @@ namespace ToolkitLauncher.Utility
             }
 
             // Unknown file changes
-            Trace.WriteLine($"Region hash mismatch for {exeName} -- aborting {patchName} patch");
-            MessageBox.Show($"Region hash mismatch for {exeName} -- aborting {patchName} patch.\nUnknown modification detected in the 1KB surrounding patch region(s).\nIf you don't know what this means, contact Crisp or PepperMan on Discord.",
+            string verb = applyPatch ? "application" : "removal";
+            Trace.WriteLine($"Region hash mismatch for {exeName} -- aborting {verb} of {patchName} patch");
+            MessageBox.Show($"Region hash mismatch for {exeName} -- aborting {verb} of {patchName} patch.\nUnknown modification detected in the 128 bytes surrounding patch region(s), unsafe to proceed.\nIf you don't know what this means, contact Crisp or PepperMan on Discord.",
             "Patcher Error", MessageBoxButton.OK, MessageBoxImage.Error
             );
             return false;
@@ -229,8 +230,8 @@ namespace ToolkitLauncher.Utility
             {
                 ToolType.Tool,
                 new PatchInfo(
-                    "A81F6726BC7DF3F414B5B740A494F1961D0357E5BE1FD2DACC8062DB0608BCED", // original
-                    "2FF1EB5692BB58862E12F848A2DC9B1A8CE68F37F9BAE07D7BBB45DA5E860052", // patched
+                    "0DCC605DE6B8ED15C3CB6D8BE377FF430F42FACE49D851AA72C0E1EA82CDBB6A", // original
+                    "C504B273DBCD1388B3BE2EE0B00A7219E11C104719D9E34AF6BBC71C4DF5505C", // patched
                     new PatchLocation[]
                     {
                         new (0x3CD5B2, new byte[] { 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC }, new byte[] { 0x44, 0x8B, 0x7C, 0xC8, 0x08, 0x48, 0x8B, 0x44, 0x24, 0x78, 0xEB, 0x44 }),
@@ -256,8 +257,8 @@ namespace ToolkitLauncher.Utility
             {
                 ToolType.Tool,
                 new PatchInfo(
-                    "652522E4A098F5B9DFA18138AB8F038726C42006F0CF7C3B8674B0B77ED84D51", // original
-                    "7F80A02178FD9CABE18A1736DD08013B36C6385180FD1E81D9CD1A42ABD59771", // patched
+                    "3AB4575A38920D4DA1371112453CD894F86F813123B68AD10F99953B1D7582B9", // original
+                    "BE9FD649486F41FB19C1DCB4635820FC0B5F2DE96DDC6A69041BF780451BCA29", // patched
                     new PatchLocation[]
                     {
                         new (0x26D123, new byte[] { 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC }, new byte[] { 0xFF, 0xC0, 0x3B, 0x45, 0xD7, 0x0F, 0x42, 0x45, 0xD7, 0x89, 0x46, 0x70, 0xC3 }),
@@ -284,8 +285,8 @@ namespace ToolkitLauncher.Utility
             {
                 ToolType.Tool,
                 new PatchInfo(
-                    "D35211F91BE1DFA69A159536BEB7DC938026CC2CEA51C3B3B03CF24D71D5AB48", // original
-                    "F4C2005A1C79B6A615C90EC98F47BA364692E826C5BC7B48637CD08138D5356A", // patched
+                    "19564BD3610BA835F5C22DD18DF7099EE8DAB431E30FB47F6637A841938FA7CB", // original
+                    "0E4221661BB63EEED560833A0B832632C37A947AD145ED61C38387AEE3FE9093", // patched
                     new PatchLocation[]
                     {
                         new (0x278373, new byte[] { 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC }, new byte[] { 0xFF, 0xC0, 0x3B, 0x45, 0xD7, 0x0F, 0x42, 0x45, 0xD7, 0x89, 0x46, 0x70, 0xC3 }),
@@ -312,8 +313,8 @@ namespace ToolkitLauncher.Utility
             {
                 ToolType.Tool,
                 new PatchInfo(
-                    "95CF79AC2308FE54D8003316E71223C3B789228E2EAB453B2C09CE03813B8247", // original
-                    "04C44C75D6456E396200B0F048299DF478509ABB6089047D5783523D06B344E4", // patched
+                    "D0DADF2C720BB7AB7D428700D65E8B6A4BB180903B915F829334ADFA0DEC74EA", // original
+                    "DA5DE484FF39BCF6BF14BF183E8EAC6956D8534E0EBA75E43DA33C278DD25218", // patched
                     new PatchLocation[]
                     {
                         new (0x17095F, new byte[] { 0xE8, 0x5C, 0x87, 0x68, 0x00 }, new byte[] {0x90, 0x90, 0x90, 0x90, 0x90}),
@@ -328,8 +329,8 @@ namespace ToolkitLauncher.Utility
             {
                 ToolType.ToolFast,
                 new PatchInfo(
-                    "C59F3287BF1ED5C7FFF7306FFD583F98CBF4F3A85D12E13313F565A24566DD47", // original
-                    "FE232C0F1EA8CF9AB5380F3DCBF20781D5E68C41D22AA10A21B043EDAE18551A", // patched
+                    "023FCDA9BD41A3444180F112B3D12EEC6A3DDBA958BC9791D408381736A40662", // original
+                    "436E3058A0EBF7E7B00F62F2B84F29E0C2C3655564AABD543476AB31E82C1F58", // patched
                     new PatchLocation[]
                     {
                         new (0xF2A02, new byte[] { 0xE8, 0x4D, 0x54, 0x29, 0x00 }, new byte[] {0x90, 0x90, 0x90, 0x90, 0x90}),
