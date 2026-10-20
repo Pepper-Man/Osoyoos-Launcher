@@ -257,15 +257,39 @@ namespace ToolkitLauncher.ToolkitInterface
             return args;
         }
 
-        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
+        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension, bool suppress_warnings)
         {
-            if (string.IsNullOrWhiteSpace(custom_extension))
+            string dataDir = GetDataDirectory();
+
+            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen3(Path.Join(dataDir, path), class_type);
+            bool continueImport = true;
+
+            if (badFormatWavs.Count > 0 && !suppress_warnings)
             {
-                await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type });
+                string outputMessage = Utility.WavFormatChecker.BuildWarningMessage(badFormatWavs, dataDir, 3);
+
+                DialogResult result = MessageBox.Show(
+                    outputMessage,
+                    "Sound Import Warning",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning);
+
+                if (result != DialogResult.OK)
+                {
+                    continueImport = false;
+                }
             }
-            else
+
+            if (continueImport)
             {
-                await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, "-bank:" + custom_extension.ToLower() });
+                if (string.IsNullOrWhiteSpace(custom_extension))
+                {
+                    await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type });
+                }
+                else
+                {
+                    await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, "-bank:" + custom_extension.ToLower() });
+                }
             }
         }
 

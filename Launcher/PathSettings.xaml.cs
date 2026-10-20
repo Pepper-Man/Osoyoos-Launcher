@@ -302,6 +302,7 @@ namespace ToolkitLauncher
             batch.IsChecked = false;
             lm_color_fix.IsChecked = false;
             fsb_corruption_fix.IsChecked = false;
+            suppress_audio_warnings.IsChecked = false;
             h2codez_update_groupbox.Visibility = Visibility.Collapsed;
             if (profile_select != null && profile_select.SelectedItem != null && ToolkitProfiles.SettingsList.Count > profile_index && profile_index >= 0)
             {
@@ -323,6 +324,7 @@ namespace ToolkitLauncher
                 batch.IsChecked = ToolkitProfiles.SettingsList[profile_index].Batch;
                 lm_color_fix.IsChecked = ToolkitProfiles.SettingsList[profile_index].ReachColorAssertFix;
                 fsb_corruption_fix.IsChecked = ToolkitProfiles.SettingsList[profile_index].ReachFSBImportFix;
+                suppress_audio_warnings.IsChecked = ToolkitProfiles.SettingsList[profile_index].SuppressAudioWarnings;
 
                 h2codez_update_groupbox.Visibility = ToolkitProfiles.SettingsList[profile_index].IsH2Codez() ?
                     Visibility.Visible : Visibility.Collapsed;
@@ -377,7 +379,8 @@ namespace ToolkitLauncher
                 ExpertMode = (bool)expert_mode.IsChecked,
                 Batch = (bool)batch.IsChecked,
                 ReachColorAssertFix = (bool)lm_color_fix.IsChecked,
-                ReachFSBImportFix = (bool)fsb_corruption_fix.IsChecked
+                ReachFSBImportFix = (bool)fsb_corruption_fix.IsChecked,
+                SuppressAudioWarnings = (bool)suppress_audio_warnings.IsChecked
             };
 
             // get new and old base directory

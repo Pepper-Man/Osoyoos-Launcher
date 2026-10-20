@@ -122,6 +122,9 @@ namespace ToolkitLauncher
             [JsonPropertyName("reach_fsb_import_fix")]
             public bool ReachFSBImportFix { get; set; } = false;
 
+            [JsonPropertyName("suppress_audio_format_warnings")]
+            public bool SuppressAudioWarnings { get; set; } = false;
+
 			/// <summary>
 			/// Whatever we should temporarily be experts
 			/// </summary>

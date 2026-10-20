@@ -219,7 +219,7 @@ namespace ToolkitLauncher.ToolkitInterface
         /// <param name="class_type"></param>
         /// <param name="compression_type"></param>
         /// <returns></returns>
-        public abstract Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension);
+        public abstract Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension, bool suppress_warnings);
 
         /// <summary>
         /// Check whatever there is mutex preventing another instance of a tool from starting

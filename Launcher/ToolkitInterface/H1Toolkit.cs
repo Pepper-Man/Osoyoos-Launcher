@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using static ToolkitLauncher.ToolkitProfiles;
 
 namespace ToolkitLauncher.ToolkitInterface
@@ -72,9 +74,29 @@ namespace ToolkitLauncher.ToolkitInterface
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
+        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension, bool suppress_warnings)
         {
-            await RunTool(ToolType.Tool, new List<string>() { "sounds", path, platform, bitrate });
+            string dataDir = GetDataDirectory();
+
+            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen1(Path.Join(dataDir, path));
+            bool continueImport = true;
+
+            if (badFormatWavs.Count > 0 && !suppress_warnings)
+            {
+                string outputMessage = Utility.WavFormatChecker.BuildWarningMessage(badFormatWavs, dataDir, 1);
+
+                MessageBoxResult msgResult = MessageBox.Show(outputMessage, "Sound Import Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (msgResult != MessageBoxResult.OK)
+                {
+                    continueImport = false;
+                }
+            }
+
+            if (continueImport)
+            {
+                await RunTool(ToolType.Tool, new List<string>() { "sounds", path, platform, bitrate });
+            }
         }
 
         override public async Task ImportBitmaps(string path, string type, string compression, bool should_clear_old_usage, bool debug_plate)

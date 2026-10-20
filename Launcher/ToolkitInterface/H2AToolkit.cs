@@ -220,9 +220,33 @@ namespace ToolkitLauncher.ToolkitInterface
             }
         }
 
-        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension)
+        public override async Task ImportSound(string path, string platform, string bitrate, string ltf_path, string sound_command, string class_type, string compression_type, string custom_extension, bool suppress_warnings)
         {
-            await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, compression_type });
+            string dataDir = GetDataDirectory();
+
+            List<string> badFormatWavs = Utility.WavFormatChecker.GetInvalidForGen2(Path.Join(dataDir, path));
+            bool continueImport = true;
+
+            if (badFormatWavs.Count > 0 && !suppress_warnings)
+            {
+                string outputMessage = Utility.WavFormatChecker.BuildWarningMessage(badFormatWavs, dataDir, 2);
+
+                DialogResult msgResult = MessageBox.Show(
+                    outputMessage,
+                    "Sound Import Warning",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning);
+
+                if (msgResult != DialogResult.OK)
+                {
+                    continueImport = false;
+                }
+            }
+
+            if (continueImport)
+            {
+                await RunTool(ToolType.Tool, new List<string>() { sound_command.Replace("_", "-"), path, class_type, compression_type });
+            }
         }
 
         public override async Task BuildCache(string scenario, CacheType cacheType, ResourceMapUsage resourceUsage, bool logTags, string cachePlatform, bool cacheCompress, bool cacheResourceSharing, bool cacheMultilingualSounds, bool cacheRemasteredSupport, bool cacheMPTagSharing)
