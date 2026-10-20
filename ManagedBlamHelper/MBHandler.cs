@@ -201,7 +201,12 @@ namespace OsoyoosMB
             {
                 ManagedBlamInterface.Start(ek_info);
                 Trace.WriteLine("Running setup_bitmap_compression");
-                BitmapSettings.ConfigureCompression(ek_info, args[1], args[2], Boolean.Parse(args[3]));
+
+                string full_path = Path.Combine(ek_info.DataDirectory, args[1]);
+                FileAttributes attrs = File.GetAttributes(full_path);
+                bool is_directory = attrs.HasFlag(FileAttributes.Directory);
+
+                BitmapSettings.ConfigureCompression(ek_info, full_path, args[2], Boolean.Parse(args[3]), is_directory);
                 ManagedBlamInterface.Stop();
                 return 0;
             }
