@@ -1134,7 +1134,7 @@ namespace ToolkitLauncher
         {
             string listEntry = BitmapCompile.bitmapType[bitmap_compile_type.SelectedIndex];
             BitmapCompressionType selectedComp = (BitmapCompressionType)bitmap_compression_type.SelectedItem; // Convert selected compression string to enum value
-            await toolkit.ImportBitmaps(compile_image_path.Text, listEntry, selectedComp.GetEnumMemberValue(), bitmap_clear_old_settings.IsChecked is true, debug_plate.IsChecked is true);
+            await toolkit.ImportBitmaps(compile_image_path.Text, listEntry, selectedComp.GetEnumMemberValue(), bitmap_clear_old_settings.IsChecked is true, debug_plate.IsChecked is true, bitmap_folder_radiobutton.IsChecked is true);
         }
 
         private async void PackageLevel(object sender, RoutedEventArgs e)
@@ -1148,6 +1148,16 @@ namespace ToolkitLauncher
             ToolkitBase.ResourceMapUsage usage = (ToolkitBase.ResourceMapUsage)resource_map_usage.SelectedIndex;
 
             await toolkit.BuildCache(package_level_path.Text, cache_type_item, usage, log_tag_loads.IsChecked ?? false, cache_platform, cache_compress.IsChecked ?? false, cache_resource_sharing.IsChecked ?? false, cache_multilingual_sounds.IsChecked ?? false, cache_remastered_support.IsChecked ?? false, cache_mp_tag_sharing.IsChecked ?? false);
+        }
+
+        private void import_bitmap_folder_Checked(object sender, RoutedEventArgs e)
+        {
+            image_import_textbox.Text = "Select image import folder.";
+        }
+
+        private void import_bitmap_single_Checked(object sender, RoutedEventArgs e)
+        {
+            image_import_textbox.Text = "Select image to import.";
         }
 
         private void CompileOnly_Checked(object sender, RoutedEventArgs e)
@@ -1453,11 +1463,12 @@ namespace ToolkitLauncher
                "Select any source image file to choose folder",
                "Supported image files|" + bitmap_file_types,
                FilePicker.Options.PathRoot.Data,
-               parent: true
+               parent: bitmap_folder_radiobutton.IsChecked == true || (toolkit is H2Toolkit || toolkit is H4Toolkit || toolkit is H2AToolkit),
+               strip_extension: bitmap_folder_radiobutton.IsChecked == true || (toolkit is H1AToolkit || toolkit is H1Toolkit)
             );
 
             bool tag_dir = false;
-            bool is_file = false;
+            bool is_file = bitmap_single_radiobutton.IsChecked == true;
             string default_path = get_default_path(compile_image_path.Text, tag_dir, is_file);
 
 
@@ -1547,6 +1558,8 @@ namespace ToolkitLauncher
         {
             light_quality_level.SelectedIndex = 0;
             class_dropdown.SelectedIndex = 0;
+            bitmap_folder_radiobutton.IsChecked = true;
+            bitmap_single_radiobutton.IsChecked = false;
         }
 
         private void string_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2585,7 +2598,7 @@ readonly FilePicker.Options xmlOptions = FilePicker.Options.FolderSelect(
    FilePicker.Options.PathRoot.Data
 );
 
-        private void browse_path_Click(object sender, RoutedEventArgs e)
+        private void browse_asset_path_Click(object sender, RoutedEventArgs e)
         {
             xml_path.Text = "";
             bool tag_dir = false;
@@ -2601,7 +2614,7 @@ readonly FilePicker.Options xmlOptions = FilePicker.Options.FolderSelect(
                 assetName = tmp.Last();
                 fullPath = "";
                 fullPath = default_path + "\\" + dataPath;
-                textBlock.Visibility = Visibility.Hidden;
+                textBlockImport.Visibility = Visibility.Hidden;
             }
             catch (Exception)
             {
