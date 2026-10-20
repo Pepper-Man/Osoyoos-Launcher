@@ -1152,11 +1152,13 @@ namespace ToolkitLauncher
 
         private void import_bitmap_folder_Checked(object sender, RoutedEventArgs e)
         {
+            compile_image_path.Clear();
             image_import_textbox.Text = "Select image import folder.";
         }
 
         private void import_bitmap_single_Checked(object sender, RoutedEventArgs e)
         {
+            compile_image_path.Clear();
             image_import_textbox.Text = "Select image to import.";
         }
 

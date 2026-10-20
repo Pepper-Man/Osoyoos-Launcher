@@ -11,17 +11,9 @@ namespace OsoyoosMB
 {
     internal class BitmapSettings
     {
-        public static void ConfigureCompression(EditingKitInfo editingKit, string tag_folder, string compress_value, bool override_existing)
+        public static void ConfigureCompression(EditingKitInfo editingKit, string path, string compress_value, bool override_existing, bool is_directory)
         {
-            // num0005 (2024), I don't think we need to get a list of all the already existing bitmaps if we are just reimporting files
-
-            /*
-            // Get all bitmap tags
-            string tag_folder_full = Path.Join(editingKit.TagDirectory, tag_folder);
-            string[] all_bitmaps = Directory.GetFiles(tag_folder_full, "*.bitmap");
-            */
-
-            var bitmaps_to_import = GetBitmapsToImport(editingKit, tag_folder);
+            IEnumerable<string> bitmaps_to_import = is_directory ? GetBitmapsToImport(editingKit, path) : [Path.GetRelativePath(editingKit.DataDirectory, Path.ChangeExtension(path, null))];
 
             var mainSuffixRules = new Dictionary<string, Action<TagFileBitmap>>
             {
@@ -245,17 +237,16 @@ namespace OsoyoosMB
             // Get all tiffs in data folder
             string[] extensions = new[] { "*.tif", "*.tiff", "*.dds" };
             List<string> all_textures = new();
-            string data_folder_full = Path.Join(editingKit.DataDirectory, files_path);
 
             // exit early if our directories don't exist
-            if (!Directory.Exists(data_folder_full))
+            if (!Directory.Exists(files_path))
             {
                 return null;
             }
 
             foreach (string extension in extensions)
             {
-                all_textures.AddRange(Directory.GetFiles(data_folder_full, extension));
+                all_textures.AddRange(Directory.GetFiles(files_path, extension));
             }
 
             return all_textures.Select(path => Path.GetRelativePath(editingKit.DataDirectory, Path.ChangeExtension(path, null)));
